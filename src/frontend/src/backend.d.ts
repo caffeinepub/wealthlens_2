@@ -37,8 +37,10 @@ export interface ArticleView {
     category: Category;
 }
 export interface UserProfile {
+    bio: string;
     name: string;
     role: UserRole;
+    photoUrl: string;
 }
 export enum Category {
     finance = "finance",
@@ -70,6 +72,7 @@ export interface backendInterface {
     getComment(id: bigint): Promise<Comment>;
     getCommentsForArticle(articleId: bigint): Promise<Array<Comment>>;
     getLikeCount(articleId: bigint): Promise<bigint>;
+    getPublicAuthorProfile(author: Principal): Promise<UserProfile | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     hasUserBookmarkedArticle(articleId: bigint, user: Principal): Promise<boolean>;
     hasUserLikedArticle(articleId: bigint, user: Principal): Promise<boolean>;

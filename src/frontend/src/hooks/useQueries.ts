@@ -1,3 +1,4 @@
+import { Principal } from "@icp-sdk/core/principal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ArticleInput, Category, UserProfile } from "../backend";
 import { useActor } from "./useActor";
@@ -15,15 +16,16 @@ export function useGetAllArticles() {
   });
 }
 
-export function useGetArticle(id: bigint) {
+export function useGetArticle(id: bigint | null) {
   const { actor, isFetching } = useActor();
   return useQuery({
-    queryKey: ["article", id.toString()],
+    queryKey: ["article", id !== null ? id.toString() : "null"],
     queryFn: async () => {
-      if (!actor) throw new Error("Actor not available");
+      if (!actor || id === null)
+        throw new Error("Actor not available or id is null");
       return actor.getArticle(id);
     },
-    enabled: !!actor && !isFetching,
+    enabled: !!actor && !isFetching && id !== null,
   });
 }
 
@@ -82,6 +84,32 @@ export function useGetCallerUserProfile() {
     isLoading: actorFetching || query.isLoading,
     isFetched: !!actor && query.isFetched,
   };
+}
+
+export function useGetAuthorProfile(principalId: string | null) {
+  const { actor, isFetching } = useActor();
+  return useQuery({
+    queryKey: ["authorProfile", principalId],
+    queryFn: async () => {
+      if (!actor || !principalId) return null;
+      const principal = Principal.fromText(principalId);
+      return actor.getPublicAuthorProfile(principal);
+    },
+    enabled: !!actor && !isFetching && !!principalId,
+  });
+}
+
+export function useGetAuthorArticles(principalId: string | null) {
+  const { actor, isFetching } = useActor();
+  return useQuery({
+    queryKey: ["authorArticles", principalId],
+    queryFn: async () => {
+      if (!actor || !principalId) return [];
+      const principal = Principal.fromText(principalId);
+      return actor.getArticlesFromAuthor(principal);
+    },
+    enabled: !!actor && !isFetching && !!principalId,
+  });
 }
 
 export function useGetComments(articleId: bigint) {

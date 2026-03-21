@@ -44,13 +44,44 @@ export interface Comment {
   'articleId' : bigint,
 }
 export type Time = bigint;
-export interface UserProfile { 'name' : string, 'role' : UserRole }
+export interface UserProfile {
+  'bio' : string,
+  'name' : string,
+  'role' : UserRole,
+  'photoUrl' : string,
+}
 export type UserRole = { 'writer' : null } |
   { 'reader' : null };
 export type UserRole__1 = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
+export interface _CaffeineStorageCreateCertificateResult {
+  'method' : string,
+  'blob_hash' : string,
+}
+export interface _CaffeineStorageRefillInformation {
+  'proposed_top_up_amount' : [] | [bigint],
+}
+export interface _CaffeineStorageRefillResult {
+  'success' : [] | [boolean],
+  'topped_up_amount' : [] | [bigint],
+}
 export interface _SERVICE {
+  '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
+  '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
+  '_caffeineStorageConfirmBlobDeletion' : ActorMethod<
+    [Array<Uint8Array>],
+    undefined
+  >,
+  '_caffeineStorageCreateCertificate' : ActorMethod<
+    [string],
+    _CaffeineStorageCreateCertificateResult
+  >,
+  '_caffeineStorageRefillCashier' : ActorMethod<
+    [[] | [_CaffeineStorageRefillInformation]],
+    _CaffeineStorageRefillResult
+  >,
+  '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole__1], undefined>,
   'createArticle' : ActorMethod<[ArticleInput], bigint>,
@@ -65,6 +96,7 @@ export interface _SERVICE {
   'getComment' : ActorMethod<[bigint], Comment>,
   'getCommentsForArticle' : ActorMethod<[bigint], Array<Comment>>,
   'getLikeCount' : ActorMethod<[bigint], bigint>,
+  'getPublicAuthorProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'hasUserBookmarkedArticle' : ActorMethod<[bigint, Principal], boolean>,
   'hasUserLikedArticle' : ActorMethod<[bigint, Principal], boolean>,

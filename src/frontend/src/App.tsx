@@ -9,12 +9,14 @@ import {
 } from "@tanstack/react-router";
 import AppLayout from "./components/layout/AppLayout";
 import ArticleDetailPage from "./pages/ArticleDetailPage";
+import AuthorProfilePage from "./pages/AuthorProfilePage";
 import BookmarksPage from "./pages/BookmarksPage";
 import CategoryPage from "./pages/CategoryPage";
 import CreateEditArticlePage from "./pages/CreateEditArticlePage";
 import DashboardPage from "./pages/DashboardPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import ProfileSettingsPage from "./pages/ProfileSettingsPage";
 import RegisterPage from "./pages/RegisterPage";
 
 const queryClient = new QueryClient();
@@ -86,6 +88,18 @@ const bookmarksRoute = createRoute({
   component: BookmarksPage,
 });
 
+const profileRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/profile",
+  component: ProfileSettingsPage,
+});
+
+const authorProfileRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/author/$principalId",
+  component: AuthorProfilePage,
+});
+
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
     homeRoute,
@@ -97,6 +111,8 @@ const routeTree = rootRoute.addChildren([
     loginRoute,
     registerRoute,
     bookmarksRoute,
+    profileRoute,
+    authorProfileRoute,
   ]),
 ]);
 

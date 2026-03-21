@@ -80,6 +80,16 @@ export default function Navbar() {
 
         {identity ? (
           <div className="flex items-center gap-2">
+            <Link to="/profile">
+              <Button
+                data-ocid="navbar.profile.link"
+                variant="ghost"
+                size="sm"
+                className="h-8 text-sm text-muted-foreground"
+              >
+                Profil
+              </Button>
+            </Link>
             <Link to="/dashboard">
               <Button
                 data-ocid="navbar.dashboard.button"
@@ -147,6 +157,15 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
+          {identity && (
+            <Link
+              to="/profile"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              Profil Saya
+            </Link>
+          )}
         </div>
       )}
     </header>

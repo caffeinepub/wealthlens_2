@@ -1,8 +1,10 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Category } from "../backend";
 import ArticleCard from "../components/ArticleCard";
-import { CATEGORY_LABELS, SAMPLE_ARTICLES } from "../data/sampleArticles";
+import { CATEGORY_LABELS, formatDate } from "../data/sampleArticles";
+import { useGetArticlesByCategory } from "../hooks/useQueries";
 
 const CATEGORY_MAP: Record<string, Category> = {
   stock: Category.stock,
@@ -15,9 +17,9 @@ const CATEGORY_MAP: Record<string, Category> = {
 export default function CategoryPage() {
   const { name } = useParams({ from: "/layout/category/$name" });
   const category = CATEGORY_MAP[name];
-  const articles = category
-    ? SAMPLE_ARTICLES.filter((a) => a.category === category)
-    : [];
+  const { data: articles = [], isLoading } = useGetArticlesByCategory(
+    category ?? Category.finance,
+  );
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
@@ -34,11 +36,20 @@ export default function CategoryPage() {
             {category ? CATEGORY_LABELS[category] : "Tidak Ditemukan"}
           </h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            {articles.length} artikel tersedia
+            {isLoading ? "Memuat..." : `${articles.length} artikel tersedia`}
           </p>
         </div>
 
-        {articles.length === 0 ? (
+        {isLoading ? (
+          <div
+            data-ocid="category.loading_state"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          >
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-72 rounded-xl" />
+            ))}
+          </div>
+        ) : articles.length === 0 ? (
           <div
             data-ocid="category.empty_state"
             className="text-center py-20 text-muted-foreground"
@@ -55,8 +66,12 @@ export default function CategoryPage() {
                 excerpt={article.excerpt}
                 coverImageUrl={article.coverImageUrl}
                 category={article.category}
-                authorName={article.authorName}
-                publishedAt={article.publishedAt}
+                authorName={article.author.toString().slice(0, 12)}
+                publishedAt={formatDate(
+                  new Date(
+                    Number(article.publishedAt) / 1_000_000,
+                  ).toISOString(),
+                )}
                 index={i}
                 ocidPrefix="category.article"
               />

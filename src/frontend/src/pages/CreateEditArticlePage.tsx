@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Category } from "../backend";
 import MarkdownEditor from "../components/MarkdownEditor";
-import { CATEGORY_LABELS, SAMPLE_ARTICLES } from "../data/sampleArticles";
+import { CATEGORY_LABELS } from "../data/sampleArticles";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import {
   useCreateArticle,
@@ -48,34 +48,29 @@ export default function CreateEditArticlePage() {
     shouldThrow: false,
   }) as { id?: string };
   const id = params?.id;
-  const isEdit = !!id;
+  const isEdit = !!id && /^\d+$/.test(id);
   const navigate = useNavigate();
   const { identity } = useInternetIdentity();
   const [form, setForm] = useState<ArticleForm>(DEFAULT_FORM);
 
-  const { data: backendArticle } = useGetArticle(
-    isEdit ? BigInt(id!) : BigInt(0),
-  );
-  const sampleArticle = isEdit
-    ? SAMPLE_ARTICLES.find((a) => a.id.toString() === id)
-    : undefined;
-  const existingArticle = backendArticle || sampleArticle;
+  const articleId = isEdit ? BigInt(id!) : null;
+  const { data: backendArticle } = useGetArticle(articleId);
 
   const createArticle = useCreateArticle();
   const updateArticle = useUpdateArticle();
 
   useEffect(() => {
-    if (existingArticle) {
+    if (backendArticle) {
       setForm({
-        title: existingArticle.title,
-        excerpt: existingArticle.excerpt,
-        content: existingArticle.content,
-        category: existingArticle.category,
-        coverImageUrl: existingArticle.coverImageUrl,
-        tags: "tags" in existingArticle ? existingArticle.tags.join(", ") : "",
+        title: backendArticle.title,
+        excerpt: backendArticle.excerpt,
+        content: backendArticle.content,
+        category: backendArticle.category,
+        coverImageUrl: backendArticle.coverImageUrl,
+        tags: backendArticle.tags.join(", "),
       });
     }
-  }, [existingArticle]);
+  }, [backendArticle]);
 
   if (!identity) {
     return (

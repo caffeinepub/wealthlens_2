@@ -4,11 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Bookmark } from "lucide-react";
 import { motion } from "motion/react";
 import ArticleCard from "../components/ArticleCard";
-import {
-  CATEGORY_LABELS,
-  SAMPLE_ARTICLES,
-  formatDate,
-} from "../data/sampleArticles";
+import { formatDate } from "../data/sampleArticles";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useGetBookmarkedArticles } from "../hooks/useQueries";
 
@@ -35,29 +31,18 @@ export default function BookmarksPage() {
     );
   }
 
-  // Use sample bookmarks for demo if no backend data
-  const articles =
-    bookmarkedArticles && bookmarkedArticles.length > 0
-      ? bookmarkedArticles.map((a) => ({
-          id: a.id.toString(),
-          title: a.title,
-          excerpt: a.excerpt,
-          coverImageUrl: a.coverImageUrl,
-          category: a.category,
-          authorName: a.author.toString().slice(0, 12),
-          publishedAt: new Date(
-            Number(a.publishedAt) / 1_000_000,
-          ).toISOString(),
-        }))
-      : SAMPLE_ARTICLES.slice(0, 2).map((a) => ({
-          id: a.id.toString(),
-          title: a.title,
-          excerpt: a.excerpt,
-          coverImageUrl: a.coverImageUrl,
-          category: a.category,
-          authorName: a.authorName,
-          publishedAt: a.publishedAt,
-        }));
+  const articles = (bookmarkedArticles ?? []).map((a) => ({
+    id: a.id.toString(),
+    title: a.title,
+    excerpt: a.excerpt,
+    coverImageUrl: a.coverImageUrl,
+    category: a.category,
+    authorName: a.author.toString().slice(0, 12),
+    authorPrincipal: a.author.toString(),
+    publishedAt: formatDate(
+      new Date(Number(a.publishedAt) / 1_000_000).toISOString(),
+    ),
+  }));
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
@@ -73,7 +58,7 @@ export default function BookmarksPage() {
               Artikel Tersimpan
             </h1>
             <p className="text-muted-foreground text-sm">
-              {articles.length} artikel disimpan
+              {isLoading ? "Memuat..." : `${articles.length} artikel disimpan`}
             </p>
           </div>
         </div>
@@ -119,6 +104,7 @@ export default function BookmarksPage() {
                 coverImageUrl={article.coverImageUrl}
                 category={article.category}
                 authorName={article.authorName}
+                authorPrincipal={article.authorPrincipal}
                 publishedAt={article.publishedAt}
                 index={i}
                 ocidPrefix="bookmarks.article"

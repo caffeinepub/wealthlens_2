@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, PenLine } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { Category } from "../backend";
 import ArticleCard from "../components/ArticleCard";
-import {
-  CATEGORY_LABELS,
-  SAMPLE_ARTICLES,
-  formatDate,
-} from "../data/sampleArticles";
+import { CATEGORY_LABELS, formatDate } from "../data/sampleArticles";
+import { useGetAllArticles } from "../hooks/useQueries";
 
 const FILTERS = [
   { key: "all", label: "Semua" },
@@ -23,15 +21,15 @@ const FILTERS = [
   },
 ];
 
-const featuredArticle = SAMPLE_ARTICLES[4];
-
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState<string>("all");
+  const { data: allArticles, isLoading } = useGetAllArticles();
 
+  const articles = allArticles ?? [];
   const filteredArticles =
     activeFilter === "all"
-      ? SAMPLE_ARTICLES
-      : SAMPLE_ARTICLES.filter((a) => a.category === activeFilter);
+      ? articles
+      : articles.filter((a) => a.category === activeFilter);
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-6">
@@ -50,35 +48,29 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
         <div className="relative z-10 p-8 md:p-12 max-w-2xl">
           <span className="inline-block text-xs font-semibold uppercase tracking-widest text-white/70 mb-3">
-            {CATEGORY_LABELS[featuredArticle.category]} · Artikel Pilihan
+            Komunitas Investasi
           </span>
           <h1 className="font-display text-2xl md:text-4xl text-white font-bold leading-tight mb-4">
-            {featuredArticle.title}
+            Investasi Cerdas Dimulai dari Sini
           </h1>
           <p className="text-sm md:text-base text-white/75 leading-relaxed mb-6 line-clamp-2">
-            {featuredArticle.excerpt}
+            Temukan wawasan terdalam tentang saham, crypto, properti, dan
+            ekonomi dari komunitas penulis WealthLens.
           </p>
           <div className="flex items-center gap-4">
-            <Link
-              to="/article/$id"
-              params={{ id: featuredArticle.id.toString() }}
-            >
+            <a href="#articles">
               <Button
                 data-ocid="hero.read.primary_button"
                 className="bg-white text-foreground hover:bg-white/90 font-semibold text-sm"
               >
-                Baca Artikel Terbaru <ArrowRight size={14} className="ml-1" />
+                Mulai Membaca <ArrowRight size={14} className="ml-1" />
               </Button>
-            </Link>
-            <span className="text-white/50 text-xs">
-              {featuredArticle.authorName} ·{" "}
-              {formatDate(featuredArticle.publishedAt)}
-            </span>
+            </a>
           </div>
         </div>
       </motion.section>
 
-      <section>
+      <section id="articles">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <h2 className="font-display text-2xl font-bold">Artikel Utama</h2>
           <div className="flex flex-wrap gap-2" data-ocid="home.filter.tab">
@@ -100,12 +92,32 @@ export default function HomePage() {
           </div>
         </div>
 
-        {filteredArticles.length === 0 ? (
+        {isLoading ? (
+          <div
+            data-ocid="home.loading_state"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          >
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Skeleton key={i} className="h-72 rounded-xl" />
+            ))}
+          </div>
+        ) : filteredArticles.length === 0 ? (
           <div
             data-ocid="home.empty_state"
-            className="text-center py-20 text-muted-foreground"
+            className="text-center py-24 text-muted-foreground"
           >
-            <p className="text-lg">Belum ada artikel di kategori ini.</p>
+            <PenLine size={40} className="mx-auto mb-4 opacity-30" />
+            <p className="text-lg font-medium mb-2">
+              Belum ada artikel, jadilah yang pertama menulis!
+            </p>
+            <p className="text-sm mb-6">
+              Login sebagai penulis dan bagikan wawasan investasimu.
+            </p>
+            <Link to="/login">
+              <Button data-ocid="home.login.primary_button" variant="outline">
+                Masuk sebagai Penulis
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -117,8 +129,13 @@ export default function HomePage() {
                 excerpt={article.excerpt}
                 coverImageUrl={article.coverImageUrl}
                 category={article.category}
-                authorName={article.authorName}
-                publishedAt={article.publishedAt}
+                authorName={article.author.toString().slice(0, 12)}
+                authorPrincipal={article.author.toString()}
+                publishedAt={formatDate(
+                  new Date(
+                    Number(article.publishedAt) / 1_000_000,
+                  ).toISOString(),
+                )}
                 index={i}
                 ocidPrefix="home.article"
               />

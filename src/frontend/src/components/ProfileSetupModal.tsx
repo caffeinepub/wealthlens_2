@@ -29,7 +29,12 @@ export default function ProfileSetupModal() {
     e.preventDefault();
     if (!name.trim()) return;
     try {
-      await saveProfile.mutateAsync({ name: name.trim(), role });
+      await saveProfile.mutateAsync({
+        name: name.trim(),
+        role,
+        bio: "",
+        photoUrl: "",
+      });
       toast.success("Profil berhasil dibuat!");
     } catch {
       toast.error("Gagal menyimpan profil.");

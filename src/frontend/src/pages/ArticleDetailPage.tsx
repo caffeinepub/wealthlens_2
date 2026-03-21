@@ -16,11 +16,7 @@ import {
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  CATEGORY_LABELS,
-  SAMPLE_ARTICLES,
-  formatDate,
-} from "../data/sampleArticles";
+import { CATEGORY_LABELS, formatDate } from "../data/sampleArticles";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import {
   useGetArticle,
@@ -51,18 +47,24 @@ function parseContent(content: string): ContentLine[] {
   });
 }
 
+function isNumericId(s: string): boolean {
+  return /^\d+$/.test(s);
+}
+
 export default function ArticleDetailPage() {
   const { id } = useParams({ from: "/layout/article/$id" });
   const { identity } = useInternetIdentity();
   const [comment, setComment] = useState("");
 
-  const { data: backendArticle, isLoading } = useGetArticle(BigInt(id));
-  const sampleArticle = SAMPLE_ARTICLES.find((a) => a.id.toString() === id);
-  const article = backendArticle || sampleArticle;
+  const validId = isNumericId(id);
+  const { data: backendArticle, isLoading } = useGetArticle(
+    validId ? BigInt(id) : BigInt(0),
+  );
 
-  const { data: comments = [] } = useGetComments(BigInt(id));
-  const { data: hasLiked } = useHasLiked(BigInt(id));
-  const { data: hasBookmarked } = useHasBookmarked(BigInt(id));
+  const articleId = validId ? BigInt(id) : BigInt(0);
+  const { data: comments = [] } = useGetComments(articleId);
+  const { data: hasLiked } = useHasLiked(articleId);
+  const { data: hasBookmarked } = useHasBookmarked(articleId);
   const toggleLike = useToggleLike();
   const toggleBookmark = useToggleBookmark();
   const postComment = usePostComment();
@@ -73,7 +75,7 @@ export default function ArticleDetailPage() {
       return;
     }
     try {
-      await toggleLike.mutateAsync(BigInt(id));
+      await toggleLike.mutateAsync(articleId);
     } catch {
       toast.error("Gagal memproses like.");
     }
@@ -85,7 +87,7 @@ export default function ArticleDetailPage() {
       return;
     }
     try {
-      await toggleBookmark.mutateAsync(BigInt(id));
+      await toggleBookmark.mutateAsync(articleId);
       toast.success(
         hasBookmarked ? "Dihapus dari bookmark." : "Ditambahkan ke bookmark!",
       );
@@ -103,7 +105,7 @@ export default function ArticleDetailPage() {
     if (!comment.trim()) return;
     try {
       await postComment.mutateAsync({
-        articleId: BigInt(id),
+        articleId,
         content: comment.trim(),
       });
       setComment("");
@@ -113,7 +115,7 @@ export default function ArticleDetailPage() {
     }
   };
 
-  if (isLoading && !sampleArticle) {
+  if (isLoading) {
     return (
       <div
         data-ocid="article.loading_state"
@@ -128,29 +130,35 @@ export default function ArticleDetailPage() {
     );
   }
 
-  if (!article) {
+  if (!validId || !backendArticle) {
     return (
       <div
         data-ocid="article.error_state"
-        className="max-w-3xl mx-auto px-6 py-20 text-center"
+        className="max-w-3xl mx-auto px-6 py-24 text-center"
       >
-        <h2 className="font-display text-2xl mb-3">Artikel tidak ditemukan</h2>
+        <div className="text-5xl mb-6">📄</div>
+        <h2 className="font-display text-2xl font-bold mb-3">
+          Artikel Tidak Ditemukan
+        </h2>
+        <p className="text-muted-foreground text-sm mb-8">
+          Artikel yang kamu cari mungkin sudah dihapus atau tidak tersedia.
+        </p>
         <Link to="/">
-          <Button variant="outline">Kembali ke Beranda</Button>
+          <Button data-ocid="article.back_home.primary_button">
+            Kembali ke Beranda
+          </Button>
         </Link>
       </div>
     );
   }
 
-  const likeCount =
-    "likes" in article ? article.likes : (backendArticle?.likes.length ?? 0);
-  const likesDisplay =
-    typeof likeCount === "number" ? likeCount : (likeCount as any[]).length;
-  const contentLines = parseContent(article.content);
-  const publishedAtStr =
-    "publishedAt" in article && typeof article.publishedAt === "string"
-      ? article.publishedAt
-      : new Date(Number(backendArticle?.publishedAt) / 1_000_000).toISOString();
+  const likeCount = backendArticle.likes.length;
+  const contentLines = parseContent(backendArticle.content);
+  const publishedAtStr = new Date(
+    Number(backendArticle.publishedAt) / 1_000_000,
+  ).toISOString();
+  const authorPrincipalStr = backendArticle.author.toString();
+  const authorName = authorPrincipalStr.slice(0, 12);
 
   return (
     <motion.div
@@ -169,32 +177,34 @@ export default function ArticleDetailPage() {
 
       <div className="rounded-xl overflow-hidden mb-8 aspect-[16/9]">
         <img
-          src={article.coverImageUrl}
-          alt={article.title}
+          src={backendArticle.coverImageUrl}
+          alt={backendArticle.title}
           className="w-full h-full object-cover"
         />
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <span className="text-xs font-semibold uppercase tracking-wider bg-pill text-pill-foreground px-2.5 py-1 rounded-full">
-          {CATEGORY_LABELS[article.category]}
+          {CATEGORY_LABELS[backendArticle.category]}
         </span>
-        <span className="text-xs text-muted-foreground flex items-center gap-1">
-          <User size={11} />{" "}
-          {"authorName" in article
-            ? article.authorName
-            : article.author.toString().slice(0, 12)}
-        </span>
+        <Link
+          to="/author/$principalId"
+          params={{ principalId: authorPrincipalStr }}
+          data-ocid="article.author.link"
+          className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground transition-colors"
+        >
+          <User size={11} /> {authorName}
+        </Link>
         <span className="text-xs text-muted-foreground flex items-center gap-1">
           <Calendar size={11} /> {formatDate(publishedAtStr)}
         </span>
       </div>
 
       <h1 className="font-display text-2xl md:text-3xl font-bold leading-tight mb-4">
-        {article.title}
+        {backendArticle.title}
       </h1>
       <p className="text-muted-foreground leading-relaxed mb-8 text-sm border-l-2 border-border pl-4 italic">
-        {article.excerpt}
+        {backendArticle.excerpt}
       </p>
 
       <article className="max-w-none">
@@ -247,10 +257,10 @@ export default function ArticleDetailPage() {
         })}
       </article>
 
-      {"tags" in article && article.tags.length > 0 && (
+      {backendArticle.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-border">
           <Tag size={14} className="text-muted-foreground mt-0.5" />
-          {article.tags.map((tag) => (
+          {backendArticle.tags.map((tag) => (
             <span
               key={tag}
               className="text-xs bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full"
@@ -271,7 +281,7 @@ export default function ArticleDetailPage() {
           className={`gap-1.5 ${hasLiked ? "bg-red-50 border-red-200 text-red-600" : ""}`}
         >
           <Heart size={14} fill={hasLiked ? "currentColor" : "none"} />
-          {likesDisplay} Suka
+          {likeCount} Suka
         </Button>
         <Button
           data-ocid="article.bookmark.toggle"
@@ -344,9 +354,13 @@ export default function ArticleDetailPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 bg-secondary rounded-lg px-4 py-3">
-                  <p className="text-xs text-muted-foreground mb-1">
+                  <Link
+                    to="/author/$principalId"
+                    params={{ principalId: c.author.toString() }}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors mb-1 block"
+                  >
                     {c.author.toString().slice(0, 16)}...
-                  </p>
+                  </Link>
                   <p className="text-sm text-foreground">{c.content}</p>
                 </div>
               </div>

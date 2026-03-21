@@ -1,19 +1,31 @@
 import Text "mo:core/Text";
+import Iter "mo:core/Iter";
 import Int "mo:core/Int";
+import Map "mo:core/Map";
+import List "mo:core/List";
 import Time "mo:core/Time";
 import Array "mo:core/Array";
+import Order "mo:core/Order";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
+import MixinStorage "blob-storage/Mixin";
 import Nat "mo:core/Nat";
-import Iter "mo:core/Iter";
-import Map "mo:core/Map";
-import Order "mo:core/Order";
+import Migration "migration";
 import Set "mo:core/Set";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
+(with migration = Migration.run)
 actor {
   // ========== Types ==========
+
+  type Comment = {
+    id : Nat;
+    articleId : Nat;
+    author : Principal;
+    content : Text;
+    createdAt : Time.Time;
+  };
 
   module Article {
     public type Category = {
@@ -22,6 +34,9 @@ actor {
       #property;
       #finance;
       #economicHistory;
+    };
+    public func compare(article1 : Article, article2 : Article) : Order.Order {
+      Nat.compare(article1.id, article2.id);
     };
 
     public type Article = {
@@ -52,10 +67,6 @@ actor {
       bookmarks : [Principal];
     };
 
-    public func compare(article1 : Article, article2 : Article) : Order.Order {
-      Nat.compare(article1.id, article2.id);
-    };
-
     public func toView(article : Article) : ArticleView {
       {
         article with
@@ -63,14 +74,6 @@ actor {
         bookmarks = article.bookmarks.toArray();
       };
     };
-  };
-
-  type Comment = {
-    id : Nat;
-    articleId : Nat;
-    author : Principal;
-    content : Text;
-    createdAt : Time.Time;
   };
 
   type ArticleInput = {
@@ -89,13 +92,14 @@ actor {
 
   public type UserProfile = {
     name : Text;
+    bio : Text;
+    photoUrl : Text;
     role : UserRole;
   };
 
-  let comments = Map.empty<Nat, Comment>();
-
   // ========== Component Communication ==========
 
+  include MixinStorage();
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
@@ -106,6 +110,7 @@ actor {
 
   let articles = Map.empty<Nat, Article.Article>();
   let userProfiles = Map.empty<Principal, UserProfile>();
+  let comments = Map.empty<Nat, Comment>();
 
   // ========== User Profile Functions ==========
 
@@ -128,6 +133,10 @@ actor {
       Runtime.trap("Unauthorized: Only users can save profiles");
     };
     userProfiles.add(caller, profile);
+  };
+
+  public query func getPublicAuthorProfile(author : Principal) : async ?UserProfile {
+    userProfiles.get(author);
   };
 
   // ========== Helper Functions ==========

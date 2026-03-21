@@ -12,6 +12,7 @@ interface ArticleCardProps {
   coverImageUrl: string;
   category: Category;
   authorName: string;
+  authorPrincipal?: string;
   publishedAt: string;
   index?: number;
   ocidPrefix?: string;
@@ -32,12 +33,20 @@ export default function ArticleCard({
   coverImageUrl,
   category,
   authorName,
+  authorPrincipal,
   publishedAt,
   index = 0,
   ocidPrefix = "article",
 }: ArticleCardProps) {
   const catKey = category as string;
   const pillColor = CATEGORY_PILL_COLORS[catKey] || "bg-primary";
+
+  const authorContent = (
+    <span className="flex items-center gap-1">
+      <User size={11} />
+      {authorName}
+    </span>
+  );
 
   return (
     <motion.article
@@ -76,10 +85,18 @@ export default function ArticleCard({
         </Link>
 
         <div className="flex items-center gap-3 mt-4 pt-3 border-t border-border text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <User size={11} />
-            {authorName}
-          </span>
+          {authorPrincipal ? (
+            <Link
+              to="/author/$principalId"
+              params={{ principalId: authorPrincipal }}
+              className="flex items-center gap-1 hover:text-foreground transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {authorContent}
+            </Link>
+          ) : (
+            authorContent
+          )}
           <span className="flex items-center gap-1 ml-auto">
             <Calendar size={11} />
             {formatDate(publishedAt)}
