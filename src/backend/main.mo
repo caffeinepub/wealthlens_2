@@ -10,12 +10,12 @@ import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import MixinStorage "blob-storage/Mixin";
 import Nat "mo:core/Nat";
-import Migration "migration";
+
 import Set "mo:core/Set";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
-(with migration = Migration.run)
+
 actor {
   // ========== Types ==========
 
