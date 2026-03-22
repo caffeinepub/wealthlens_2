@@ -15,6 +15,23 @@ import { UserRole } from "../backend";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useGetCallerUserProfile, useSaveProfile } from "../hooks/useQueries";
 
+function getProfileErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    const msg = error.message;
+    if (msg.includes("not authorized") || msg.includes("Unauthorized")) {
+      return "Kamu tidak memiliki izin. Coba logout dan login ulang.";
+    }
+    if (msg.includes("guest")) {
+      return "Sesi login tidak valid. Coba logout dan login ulang.";
+    }
+    if (msg.toLowerCase().includes("actor")) {
+      return "Koneksi ke backend bermasalah. Refresh halaman dan coba lagi.";
+    }
+    return `Gagal menyimpan profil: ${msg}`;
+  }
+  return "Gagal menyimpan profil. Coba lagi.";
+}
+
 export default function ProfileSetupModal() {
   const { identity } = useInternetIdentity();
   const { data: userProfile, isLoading, isFetched } = useGetCallerUserProfile();
@@ -37,8 +54,8 @@ export default function ProfileSetupModal() {
         photoUrl: "",
       });
       toast.success("Profil berhasil dibuat!");
-    } catch {
-      toast.error("Gagal menyimpan profil.");
+    } catch (error) {
+      toast.error(getProfileErrorMessage(error), { duration: 6000 });
     }
   };
 

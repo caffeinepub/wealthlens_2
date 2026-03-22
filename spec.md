@@ -1,20 +1,23 @@
 # WealthLens
 
 ## Current State
-Aplikasi blog investasi multi-penulis. Bug: ProfileSetupModal tidak muncul untuk pengguna baru karena pengecekan `userProfile === null` tidak menangkap `undefined`. Pesan error saat gagal publikasi artikel tidak informatif.
+WealthLens berjalan dengan fitur utama. Bug: error backend disembunyikan sehingga user tidak tahu penyebab kegagalan simpan profil/artikel.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Pesan error spesifik dari backend ditampilkan saat artikel gagal disimpan
+- Helper getProfileErrorMessage(error) untuk pesan error informatif
+- Graceful degradation di useActor jika _initializeAccessControlWithSecret gagal
 
 ### Modify
-- `ProfileSetupModal.tsx`: ubah `userProfile === null` menjadi `userProfile == null`
-- `CreateEditArticlePage.tsx`: surface error message dari backend di catch block
+- ProfileSettingsPage.tsx: tampilkan error spesifik dari backend
+- ProfileSetupModal.tsx: tampilkan error spesifik dari backend
+- useActor.ts: wrap _initializeAccessControlWithSecret dalam try/catch
 
 ### Remove
 - Tidak ada
 
 ## Implementation Plan
-1. Fix `ProfileSetupModal`: `showModal` condition dari `userProfile === null` ke `userProfile == null`
-2. Fix `CreateEditArticlePage`: catch block menangkap dan menampilkan error message dari backend
+1. Update useActor.ts: wrap init access control dalam try/catch, tetap return actor
+2. Update ProfileSettingsPage.tsx: tambah getProfileErrorMessage, gunakan di catch
+3. Update ProfileSetupModal.tsx: tambah getProfileErrorMessage, gunakan di catch
