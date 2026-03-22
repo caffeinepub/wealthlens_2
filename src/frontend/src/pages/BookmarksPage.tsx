@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
 import { Bookmark } from "lucide-react";
 import { motion } from "motion/react";
-import ArticleCard from "../components/ArticleCard";
+import AuthorArticleCard from "../components/AuthorArticleCard";
 import { formatDate } from "../data/sampleArticles";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useGetBookmarkedArticles } from "../hooks/useQueries";
@@ -31,18 +31,7 @@ export default function BookmarksPage() {
     );
   }
 
-  const articles = (bookmarkedArticles ?? []).map((a) => ({
-    id: a.id.toString(),
-    title: a.title,
-    excerpt: a.excerpt,
-    coverImageUrl: a.coverImageUrl,
-    category: a.category,
-    authorName: a.author.toString().slice(0, 12),
-    authorPrincipal: a.author.toString(),
-    publishedAt: formatDate(
-      new Date(Number(a.publishedAt) / 1_000_000).toISOString(),
-    ),
-  }));
+  const articles = bookmarkedArticles ?? [];
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
@@ -96,16 +85,19 @@ export default function BookmarksPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {articles.map((article, i) => (
-              <ArticleCard
-                key={article.id}
-                id={article.id}
+              <AuthorArticleCard
+                key={article.id.toString()}
+                id={article.id.toString()}
                 title={article.title}
                 excerpt={article.excerpt}
                 coverImageUrl={article.coverImageUrl}
                 category={article.category}
-                authorName={article.authorName}
-                authorPrincipal={article.authorPrincipal}
-                publishedAt={article.publishedAt}
+                authorPrincipal={article.author.toString()}
+                publishedAt={formatDate(
+                  new Date(
+                    Number(article.publishedAt) / 1_000_000,
+                  ).toISOString(),
+                )}
                 index={i}
                 ocidPrefix="bookmarks.article"
               />

@@ -17,6 +17,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CATEGORY_LABELS, formatDate } from "../data/sampleArticles";
+import { useAuthorName } from "../hooks/useAuthorName";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import {
   useGetArticle,
@@ -68,6 +69,9 @@ export default function ArticleDetailPage() {
   const toggleLike = useToggleLike();
   const toggleBookmark = useToggleBookmark();
   const postComment = usePostComment();
+
+  const authorPrincipalStr = backendArticle?.author.toString() ?? null;
+  const authorName = useAuthorName(authorPrincipalStr);
 
   const handleLike = async () => {
     if (!identity) {
@@ -157,8 +161,6 @@ export default function ArticleDetailPage() {
   const publishedAtStr = new Date(
     Number(backendArticle.publishedAt) / 1_000_000,
   ).toISOString();
-  const authorPrincipalStr = backendArticle.author.toString();
-  const authorName = authorPrincipalStr.slice(0, 12);
 
   return (
     <motion.div
@@ -175,26 +177,30 @@ export default function ArticleDetailPage() {
         <ArrowLeft size={14} /> Kembali
       </Link>
 
-      <div className="rounded-xl overflow-hidden mb-8 aspect-[16/9]">
-        <img
-          src={backendArticle.coverImageUrl}
-          alt={backendArticle.title}
-          className="w-full h-full object-cover"
-        />
-      </div>
+      {backendArticle.coverImageUrl && (
+        <div className="rounded-xl overflow-hidden mb-8 aspect-[16/9]">
+          <img
+            src={backendArticle.coverImageUrl}
+            alt={backendArticle.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <span className="text-xs font-semibold uppercase tracking-wider bg-pill text-pill-foreground px-2.5 py-1 rounded-full">
           {CATEGORY_LABELS[backendArticle.category]}
         </span>
-        <Link
-          to="/author/$principalId"
-          params={{ principalId: authorPrincipalStr }}
-          data-ocid="article.author.link"
-          className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground transition-colors"
-        >
-          <User size={11} /> {authorName}
-        </Link>
+        {authorPrincipalStr && (
+          <Link
+            to="/author/$principalId"
+            params={{ principalId: authorPrincipalStr }}
+            data-ocid="article.author.link"
+            className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground transition-colors"
+          >
+            <User size={11} /> {authorName}
+          </Link>
+        )}
         <span className="text-xs text-muted-foreground flex items-center gap-1">
           <Calendar size={11} /> {formatDate(publishedAtStr)}
         </span>

@@ -5,7 +5,7 @@ import { ArrowRight, PenLine } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { Category } from "../backend";
-import ArticleCard from "../components/ArticleCard";
+import AuthorArticleCard from "../components/AuthorArticleCard";
 import { CATEGORY_LABELS, formatDate } from "../data/sampleArticles";
 import { useGetAllArticles } from "../hooks/useQueries";
 
@@ -122,14 +122,13 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredArticles.map((article, i) => (
-              <ArticleCard
+              <AuthorArticleCard
                 key={article.id.toString()}
                 id={article.id.toString()}
                 title={article.title}
                 excerpt={article.excerpt}
                 coverImageUrl={article.coverImageUrl}
                 category={article.category}
-                authorName={article.author.toString().slice(0, 12)}
                 authorPrincipal={article.author.toString()}
                 publishedAt={formatDate(
                   new Date(
