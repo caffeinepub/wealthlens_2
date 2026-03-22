@@ -10,10 +10,8 @@ import {
   Bookmark,
   Home,
   LayoutDashboard,
-  LogIn,
   TrendingUp,
 } from "lucide-react";
-import { useInternetIdentity } from "../../hooks/useInternetIdentity";
 
 type NavItem =
   | {
@@ -48,13 +46,14 @@ const navItems: NavItem[] = [
 
 export default function Sidebar() {
   const location = useLocation();
-  const { identity, login, loginStatus } = useInternetIdentity();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-14 bg-sidebar flex flex-col items-center py-6 z-40 border-r border-sidebar-border">
-      <Link to="/" className="mb-8">
-        <div className="w-8 h-8 bg-sidebar-foreground rounded-sm flex items-center justify-center">
-          <span className="text-sidebar font-display text-xs font-bold">W</span>
+    <aside className="fixed left-0 top-0 h-screen w-14 bg-sidebar flex flex-col items-center pt-3 pb-6 z-40 border-r border-sidebar-border">
+      <Link to="/" className="mb-8 h-8 flex items-center justify-center">
+        <div className="w-9 h-9 bg-white rounded-sm flex items-center justify-center shadow-sm">
+          <span className="text-gray-900 font-display text-xs font-bold">
+            W
+          </span>
         </div>
       </Link>
 
@@ -91,27 +90,6 @@ export default function Sidebar() {
             );
           })}
         </nav>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              data-ocid="sidebar.login.toggle"
-              onClick={() => !identity && login()}
-              disabled={loginStatus === "logging-in"}
-              className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors mt-auto ${
-                identity
-                  ? "bg-sidebar-foreground/20 text-sidebar-foreground"
-                  : "text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-foreground/10"
-              }`}
-            >
-              <LogIn size={18} />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="right" className="text-xs">
-            {identity ? "Masuk" : "Login"}
-          </TooltipContent>
-        </Tooltip>
       </TooltipProvider>
     </aside>
   );

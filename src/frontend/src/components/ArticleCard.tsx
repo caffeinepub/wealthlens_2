@@ -1,6 +1,5 @@
-import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
-import { Calendar, User } from "lucide-react";
+import { Calendar, ImageOff, User } from "lucide-react";
 import { motion } from "motion/react";
 import type { Category } from "../backend";
 import { CATEGORY_LABELS, formatDate } from "../data/sampleArticles";
@@ -59,14 +58,20 @@ export default function ArticleCard({
       <Link
         to="/article/$id"
         params={{ id }}
-        className="block overflow-hidden relative aspect-[16/9]"
+        className="block overflow-hidden relative aspect-[16/9] bg-secondary"
       >
-        <img
-          src={coverImageUrl}
-          alt={title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
+        {coverImageUrl ? (
+          <img
+            src={coverImageUrl}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+            <ImageOff size={36} />
+          </div>
+        )}
         <span
           className={`absolute top-3 left-3 text-[11px] font-semibold uppercase tracking-wider text-white px-2.5 py-1 rounded-full ${pillColor}`}
         >
