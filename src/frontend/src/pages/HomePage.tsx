@@ -37,36 +37,49 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative rounded-2xl overflow-hidden mb-10 min-h-[380px] flex items-end"
+        className="relative rounded-2xl overflow-hidden mb-10 py-16 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center text-center"
         data-ocid="hero.section"
       >
-        <img
-          src="/assets/generated/hero-wealthlens.dim_1200x500.jpg"
-          alt="WealthLens Hero"
-          className="absolute inset-0 w-full h-full object-cover"
+        {/* Subtle grid overlay for texture */}
+        <div
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-        <div className="relative z-10 p-8 md:p-12 max-w-2xl">
-          <span className="inline-block text-xs font-semibold uppercase tracking-widest text-white/70 mb-3">
-            Komunitas Investasi
-          </span>
-          <h1 className="font-display text-2xl md:text-4xl text-white font-bold leading-tight mb-4">
-            Investasi Cerdas Dimulai dari Sini
+        <div className="relative z-10 px-6 max-w-3xl">
+          {/* Label */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="h-px w-8 bg-white/30" />
+            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/50">
+              WealthLens
+            </span>
+            <div className="h-px w-8 bg-white/30" />
+          </div>
+
+          {/* Slogan */}
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-5">
+            Investasi Cerdas,{" "}
+            <span className="text-white/70">Keputusan Tepat</span>
           </h1>
-          <p className="text-sm md:text-base text-white/75 leading-relaxed mb-6 line-clamp-2">
+
+          {/* Sub-text */}
+          <p className="text-sm md:text-base text-white/55 leading-relaxed mb-8 max-w-xl mx-auto">
             Temukan wawasan terdalam tentang saham, crypto, properti, dan
             ekonomi dari komunitas penulis WealthLens.
           </p>
-          <div className="flex items-center gap-4">
-            <a href="#articles">
-              <Button
-                data-ocid="hero.read.primary_button"
-                className="bg-white text-foreground hover:bg-white/90 font-semibold text-sm"
-              >
-                Mulai Membaca <ArrowRight size={14} className="ml-1" />
-              </Button>
-            </a>
-          </div>
+
+          {/* CTA */}
+          <a href="#articles">
+            <Button
+              data-ocid="hero.read.primary_button"
+              className="bg-white text-slate-900 hover:bg-white/90 font-semibold text-sm px-6 h-11"
+            >
+              Mulai Membaca <ArrowRight size={14} className="ml-1.5" />
+            </Button>
+          </a>
         </div>
       </motion.section>
 
