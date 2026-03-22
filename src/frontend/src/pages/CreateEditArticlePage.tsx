@@ -42,6 +42,22 @@ const DEFAULT_FORM: ArticleForm = {
   tags: "",
 };
 
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    const msg = error.message;
+    if (msg.includes("Only writers can submit articles")) {
+      return "Akun kamu belum terdaftar sebagai Penulis. Pergi ke Profil dan simpan ulang profilmu sebagai Penulis.";
+    }
+    if (msg.includes("Must be registered") || msg.includes("not registered")) {
+      return "Akun kamu belum terdaftar. Coba logout dan login ulang.";
+    }
+    if (msg.includes("Only writers can update articles")) {
+      return "Hanya penulis yang bisa mengedit artikel.";
+    }
+  }
+  return "Gagal menyimpan artikel. Coba lagi.";
+}
+
 export default function CreateEditArticlePage() {
   const params = useParams({
     from: "/layout/article/edit/$id",
@@ -105,8 +121,8 @@ export default function CreateEditArticlePage() {
         toast.success("Artikel berhasil dipublikasikan!");
       }
       navigate({ to: "/dashboard" });
-    } catch {
-      toast.error("Gagal menyimpan artikel.");
+    } catch (error) {
+      toast.error(getErrorMessage(error), { duration: 6000 });
     }
   };
 

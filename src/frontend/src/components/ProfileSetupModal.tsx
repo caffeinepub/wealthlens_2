@@ -22,8 +22,9 @@ export default function ProfileSetupModal() {
   const [name, setName] = useState("");
   const [role, setRole] = useState<UserRole>(UserRole.reader);
 
+  // Use loose equality to catch both null and undefined
   const showModal =
-    !!identity && !isLoading && isFetched && userProfile === null;
+    !!identity && !isLoading && isFetched && userProfile == null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
