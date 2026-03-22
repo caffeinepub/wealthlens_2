@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, Search, User, X } from "lucide-react";
 import { useState } from "react";
 import { Category } from "../../backend";
 import { CATEGORY_LABELS } from "../../data/sampleArticles";
@@ -84,10 +84,11 @@ export default function Navbar() {
               <Button
                 data-ocid="navbar.profile.link"
                 variant="ghost"
-                size="sm"
-                className="h-8 text-sm text-muted-foreground"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                title="Profil"
               >
-                Profil
+                <User size={16} />
               </Button>
             </Link>
             <Link to="/dashboard">

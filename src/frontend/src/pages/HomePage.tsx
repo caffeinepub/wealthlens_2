@@ -62,7 +62,7 @@ export default function HomePage() {
           {/* Slogan */}
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-5">
             Investasi Cerdas,{" "}
-            <span className="text-white/70">Keputusan Tepat</span>
+            <span className="text-white">Keputusan Tepat</span>
           </h1>
 
           {/* Sub-text */}
