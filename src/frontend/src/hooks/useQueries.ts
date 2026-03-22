@@ -219,6 +219,9 @@ export function useToggleLike() {
         queryKey: ["liked", articleId.toString()],
       });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
+      queryClient.invalidateQueries({
+        queryKey: ["article", articleId.toString()],
+      });
     },
   });
 }
