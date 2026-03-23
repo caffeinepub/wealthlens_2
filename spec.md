@@ -1,23 +1,22 @@
 # WealthLens
 
 ## Current State
-WealthLens berjalan dengan fitur utama. Bug: error backend disembunyikan sehingga user tidak tahu penyebab kegagalan simpan profil/artikel.
+Field cover image di halaman `CreateEditArticlePage.tsx` hanya berupa input teks URL (`Input` biasa). Tidak ada opsi upload file gambar dari perangkat lokal. Blob storage sudah dipilih sebagai komponen.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Helper getProfileErrorMessage(error) untuk pesan error informatif
-- Graceful degradation di useActor jika _initializeAccessControlWithSecret gagal
+- Komponen `CoverImagePicker.tsx`: UI dengan dua tab/pilihan -- "Upload File" dan "Paste URL"
+- Integrasi `blob-storage` untuk upload gambar cover artikel
+- Preview gambar yang sudah dipilih/diupload
 
 ### Modify
-- ProfileSettingsPage.tsx: tampilkan error spesifik dari backend
-- ProfileSetupModal.tsx: tampilkan error spesifik dari backend
-- useActor.ts: wrap _initializeAccessControlWithSecret dalam try/catch
+- `CreateEditArticlePage.tsx`: ganti field `coverImageUrl` (plain input) dengan komponen `CoverImagePicker`
 
 ### Remove
 - Tidak ada
 
 ## Implementation Plan
-1. Update useActor.ts: wrap init access control dalam try/catch, tetap return actor
-2. Update ProfileSettingsPage.tsx: tambah getProfileErrorMessage, gunakan di catch
-3. Update ProfileSetupModal.tsx: tambah getProfileErrorMessage, gunakan di catch
+1. Buat komponen `CoverImagePicker.tsx` dengan dua mode: tab "Upload" (file picker + blob storage upload) dan tab "URL" (input teks biasa)
+2. Tampilkan preview gambar setelah dipilih/diinput
+3. Integrasikan komponen ke `CreateEditArticlePage.tsx` menggantikan field URL lama

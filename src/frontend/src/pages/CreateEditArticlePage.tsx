@@ -15,6 +15,7 @@ import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Category } from "../backend";
+import CoverImagePicker from "../components/CoverImagePicker";
 import MarkdownEditor from "../components/MarkdownEditor";
 import { CATEGORY_LABELS } from "../data/sampleArticles";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
@@ -160,43 +161,34 @@ export default function CreateEditArticlePage() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="category">Kategori *</Label>
-            <Select
-              value={form.category}
-              onValueChange={(v) =>
-                setForm((p) => ({ ...p, category: v as Category }))
-              }
+        <div className="space-y-2">
+          <Label htmlFor="category">Kategori *</Label>
+          <Select
+            value={form.category}
+            onValueChange={(v) =>
+              setForm((p) => ({ ...p, category: v as Category }))
+            }
+          >
+            <SelectTrigger
+              data-ocid="create_article.category.select"
+              id="category"
             >
-              <SelectTrigger
-                data-ocid="create_article.category.select"
-                id="category"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(Category).map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {CATEGORY_LABELS[cat]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="coverImageUrl">URL Gambar Cover</Label>
-            <Input
-              data-ocid="create_article.cover_image.input"
-              id="coverImageUrl"
-              placeholder="https://..."
-              value={form.coverImageUrl}
-              onChange={(e) =>
-                setForm((p) => ({ ...p, coverImageUrl: e.target.value }))
-              }
-            />
-          </div>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(Category).map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {CATEGORY_LABELS[cat]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
+
+        <CoverImagePicker
+          value={form.coverImageUrl}
+          onChange={(url) => setForm((p) => ({ ...p, coverImageUrl: url }))}
+        />
 
         <div className="space-y-2">
           <Label htmlFor="excerpt">Ringkasan *</Label>
