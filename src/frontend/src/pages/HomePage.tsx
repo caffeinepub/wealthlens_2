@@ -24,7 +24,7 @@ const FILTERS = [
 const SKETCH_SVG = {
   fill: "none" as const,
   stroke: "currentColor",
-  strokeWidth: "1.5",
+  strokeWidth: "2.5",
   strokeLinecap: "round" as const,
   strokeLinejoin: "round" as const,
   "aria-hidden": "true" as const,
@@ -32,7 +32,7 @@ const SKETCH_SVG = {
 
 function SketchLeft() {
   return (
-    <div className="hidden md:flex flex-col items-center gap-8 absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 text-amber-300/15 pointer-events-none select-none">
+    <div className="hidden md:flex flex-col items-center gap-8 absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none select-none">
       <svg {...SKETCH_SVG} width="72" height="72" viewBox="0 0 72 72">
         <title>Bitcoin coin sketch</title>
         <circle cx="36" cy="36" r="30" />
@@ -41,19 +41,6 @@ function SketchLeft() {
         <path d="M30 38 h9 a5 5 0 0 1 0 10 h-9 z" />
         <line x1="33" y1="26" x2="33" y2="50" />
         <line x1="39" y1="26" x2="39" y2="50" />
-      </svg>
-      <svg {...SKETCH_SVG} width="64" height="56" viewBox="0 0 64 56">
-        <title>Stack of coins sketch</title>
-        <ellipse cx="32" cy="46" rx="22" ry="7" />
-        <path d="M10 46V38" />
-        <path d="M54 46V38" />
-        <ellipse cx="32" cy="38" rx="22" ry="7" />
-        <path d="M10 38V30" />
-        <path d="M54 38V30" />
-        <ellipse cx="32" cy="30" rx="22" ry="7" />
-        <path d="M10 30V22" />
-        <path d="M54 30V22" />
-        <ellipse cx="32" cy="22" rx="22" ry="7" />
       </svg>
       <svg {...SKETCH_SVG} width="80" height="44" viewBox="0 0 80 44">
         <title>Dollar bill sketch</title>
@@ -72,7 +59,7 @@ function SketchLeft() {
 
 function SketchRight() {
   return (
-    <div className="hidden md:flex flex-col items-center gap-8 absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 text-white/10 pointer-events-none select-none">
+    <div className="hidden md:flex flex-col items-center gap-8 absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none select-none">
       <svg {...SKETCH_SVG} width="72" height="72" viewBox="0 0 72 72">
         <title>House property sketch</title>
         <polyline points="8,36 36,10 64,36" />
@@ -82,18 +69,6 @@ function SketchRight() {
         <rect x="42" y="36" width="10" height="10" />
         <line x1="36" y1="10" x2="36" y2="4" />
         <line x1="30" y1="16" x2="42" y2="16" />
-      </svg>
-      <svg {...SKETCH_SVG} width="80" height="60" viewBox="0 0 80 60">
-        <title>Financial bar chart sketch</title>
-        <line x1="8" y1="52" x2="8" y2="8" />
-        <line x1="8" y1="52" x2="72" y2="52" />
-        <rect x="14" y="38" width="9" height="14" />
-        <rect x="27" y="30" width="9" height="22" />
-        <rect x="40" y="22" width="9" height="30" />
-        <rect x="53" y="14" width="9" height="38" />
-        <polyline points="18,36 31,28 44,20 57,12" strokeDasharray="3 2" />
-        <line x1="5" y1="38" x2="8" y2="38" />
-        <line x1="5" y1="24" x2="8" y2="24" />
       </svg>
       <svg {...SKETCH_SVG} width="52" height="72" viewBox="0 0 52 72">
         <title>Ethereum crypto sketch</title>
