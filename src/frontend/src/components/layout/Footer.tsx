@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { SiInstagram, SiLinkedin, SiX, SiYoutube } from "react-icons/si";
+import { SiInstagram, SiWhatsapp } from "react-icons/si";
 import { toast } from "sonner";
 
 const categoryLinks = [
@@ -14,10 +14,16 @@ const categoryLinks = [
 ];
 
 const socialLinks = [
-  { href: "https://x.com", label: "X / Twitter", icon: SiX },
-  { href: "https://instagram.com", label: "Instagram", icon: SiInstagram },
-  { href: "https://youtube.com", label: "YouTube", icon: SiYoutube },
-  { href: "https://linkedin.com", label: "LinkedIn", icon: SiLinkedin },
+  {
+    href: "https://www.instagram.com/linang02?igsh=MWwweXVpaHFlZnV6bg==",
+    label: "Instagram",
+    icon: SiInstagram,
+  },
+  {
+    href: "https://wa.me/qr/3R2YYXKTSMENJ1",
+    label: "WhatsApp",
+    icon: SiWhatsapp,
+  },
 ];
 
 export default function Footer() {

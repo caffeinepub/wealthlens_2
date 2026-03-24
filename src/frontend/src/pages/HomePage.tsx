@@ -21,67 +21,6 @@ const FILTERS = [
   },
 ];
 
-const SKETCH_SVG = {
-  fill: "none" as const,
-  stroke: "currentColor",
-  strokeWidth: "2.5",
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-  "aria-hidden": "true" as const,
-};
-
-function SketchLeft() {
-  return (
-    <div className="hidden md:flex flex-col items-center gap-8 absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none select-none">
-      <svg {...SKETCH_SVG} width="72" height="72" viewBox="0 0 72 72">
-        <title>Bitcoin coin sketch</title>
-        <circle cx="36" cy="36" r="30" />
-        <circle cx="36" cy="36" r="22" strokeDasharray="4 3" />
-        <path d="M30 28 h8 a5 5 0 0 1 0 10 h-8 z" />
-        <path d="M30 38 h9 a5 5 0 0 1 0 10 h-9 z" />
-        <line x1="33" y1="26" x2="33" y2="50" />
-        <line x1="39" y1="26" x2="39" y2="50" />
-      </svg>
-      <svg {...SKETCH_SVG} width="80" height="44" viewBox="0 0 80 44">
-        <title>Dollar bill sketch</title>
-        <rect x="4" y="6" width="72" height="32" rx="3" />
-        <rect x="10" y="12" width="60" height="20" rx="2" />
-        <circle cx="40" cy="22" r="7" />
-        <path d="M40 17 v10 M37 19 h6 M37 25 h6" />
-        <line x1="4" y1="14" x2="10" y2="14" />
-        <line x1="4" y1="30" x2="10" y2="30" />
-        <line x1="70" y1="14" x2="76" y2="14" />
-        <line x1="70" y1="30" x2="76" y2="30" />
-      </svg>
-    </div>
-  );
-}
-
-function SketchRight() {
-  return (
-    <div className="hidden md:flex flex-col items-center gap-8 absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 text-white/20 pointer-events-none select-none">
-      <svg {...SKETCH_SVG} width="72" height="72" viewBox="0 0 72 72">
-        <title>House property sketch</title>
-        <polyline points="8,36 36,10 64,36" />
-        <polyline points="16,30 16,62 56,62 56,30" />
-        <rect x="28" y="44" width="16" height="18" />
-        <rect x="20" y="36" width="10" height="10" />
-        <rect x="42" y="36" width="10" height="10" />
-        <line x1="36" y1="10" x2="36" y2="4" />
-        <line x1="30" y1="16" x2="42" y2="16" />
-      </svg>
-      <svg {...SKETCH_SVG} width="52" height="72" viewBox="0 0 52 72">
-        <title>Ethereum crypto sketch</title>
-        <polyline points="26,4 4,36 26,28 48,36 26,4" />
-        <polyline points="26,28 4,36 26,48 48,36 26,28" />
-        <polyline points="26,48 4,36" />
-        <polyline points="26,48 48,36" />
-        <polyline points="4,36 26,68 48,36" />
-      </svg>
-    </div>
-  );
-}
-
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const { data: allArticles, isLoading } = useGetAllArticles();
@@ -101,7 +40,7 @@ export default function HomePage() {
         className="relative rounded-2xl overflow-hidden mb-10 py-16 md:py-20 flex flex-col items-center justify-center text-center"
         style={{
           backgroundImage:
-            "url('/assets/uploads/20260324_105229_0000-019d1df9-d9a3-73ec-b211-bf8ce4a7f658-1.png')",
+            "url('/assets/uploads/20260324_154247_0000-019d1f05-a521-750c-b325-10629ad44225-1.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -109,10 +48,6 @@ export default function HomePage() {
       >
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/55" />
-
-        {/* Decorative sketch illustrations — hidden on mobile, flanking center text on desktop */}
-        <SketchLeft />
-        <SketchRight />
 
         <div className="relative z-10 px-6 max-w-3xl">
           {/* Label */}
