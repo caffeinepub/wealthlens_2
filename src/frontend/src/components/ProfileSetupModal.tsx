@@ -38,10 +38,11 @@ export default function ProfileSetupModal() {
   const saveProfile = useSaveProfile();
   const [name, setName] = useState("");
   const [role, setRole] = useState<UserRole>(UserRole.reader);
+  const [dismissed, setDismissed] = useState(false);
 
   // Use loose equality to catch both null and undefined
   const showModal =
-    !!identity && !isLoading && isFetched && userProfile == null;
+    !!identity && !isLoading && isFetched && userProfile == null && !dismissed;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +61,12 @@ export default function ProfileSetupModal() {
   };
 
   return (
-    <Dialog open={showModal}>
+    <Dialog
+      open={showModal}
+      onOpenChange={(open) => {
+        if (!open) setDismissed(true);
+      }}
+    >
       <DialogContent data-ocid="profile_setup.dialog" className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
