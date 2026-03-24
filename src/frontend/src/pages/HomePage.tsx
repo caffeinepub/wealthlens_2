@@ -98,18 +98,17 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative rounded-2xl overflow-hidden mb-10 py-16 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center text-center"
+        className="relative rounded-2xl overflow-hidden mb-10 py-16 md:py-20 flex flex-col items-center justify-center text-center"
+        style={{
+          backgroundImage:
+            "url('/assets/uploads/20260324_105229_0000-019d1df9-d9a3-73ec-b211-bf8ce4a7f658-1.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
         data-ocid="hero.section"
       >
-        {/* Subtle grid overlay for texture */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/55" />
 
         {/* Decorative sketch illustrations — hidden on mobile, flanking center text on desktop */}
         <SketchLeft />
