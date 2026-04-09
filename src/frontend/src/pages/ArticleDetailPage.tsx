@@ -52,6 +52,40 @@ function isNumericId(s: string): boolean {
   return /^\d+$/.test(s);
 }
 
+function CommentItem({
+  c,
+  index,
+}: {
+  c: {
+    id: bigint;
+    author: { toString(): string };
+    content: string;
+    createdAt: bigint;
+  };
+  index: number;
+}) {
+  const authorPrincipal = c.author.toString();
+  const authorName = useAuthorName(authorPrincipal);
+  const initials = authorName.slice(0, 2).toUpperCase();
+  return (
+    <div data-ocid={`article.comment.item.${index + 1}`} className="flex gap-3">
+      <Avatar className="w-8 h-8">
+        <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+      </Avatar>
+      <div className="flex-1 bg-secondary rounded-lg px-4 py-3">
+        <Link
+          to="/author/$principalId"
+          params={{ principalId: authorPrincipal }}
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors mb-1 block"
+        >
+          {authorName}
+        </Link>
+        <p className="text-sm text-foreground">{c.content}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ArticleDetailPage() {
   const { id } = useParams({ from: "/layout/article/$id" });
   const { identity } = useInternetIdentity();
@@ -349,27 +383,7 @@ export default function ArticleDetailPage() {
         ) : (
           <div className="space-y-4">
             {comments.map((c, i) => (
-              <div
-                data-ocid={`article.comment.item.${i + 1}`}
-                key={c.id.toString()}
-                className="flex gap-3"
-              >
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="text-xs">
-                    {c.author.toString().slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 bg-secondary rounded-lg px-4 py-3">
-                  <Link
-                    to="/author/$principalId"
-                    params={{ principalId: c.author.toString() }}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors mb-1 block"
-                  >
-                    {c.author.toString().slice(0, 16)}...
-                  </Link>
-                  <p className="text-sm text-foreground">{c.content}</p>
-                </div>
-              </div>
+              <CommentItem key={c.id.toString()} c={c} index={i} />
             ))}
           </div>
         )}
